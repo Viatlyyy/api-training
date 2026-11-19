@@ -14,6 +14,8 @@ partial class Form1
     private Label responseLabel;
     private TextBox resultTextBox;
     private ErrorProvider inputErrors;
+    private Label saveStatusLabel;
+    private TextBox logPathTextBox;
 
     protected override void Dispose(bool disposing)
     {
@@ -36,6 +38,8 @@ partial class Form1
         responseLabel = new Label();
         resultTextBox = new TextBox();
         inputErrors = new ErrorProvider(components);
+        saveStatusLabel = new Label();
+        logPathTextBox = new TextBox();
         ((System.ComponentModel.ISupportInitialize)priceNumericUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)quantityNumericUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)inputErrors).BeginInit();
@@ -115,10 +119,26 @@ partial class Form1
         inputErrors.BlinkStyle = ErrorBlinkStyle.NeverBlink;
         inputErrors.ContainerControl = this;
 
+        saveStatusLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        saveStatusLabel.AutoEllipsis = true;
+        saveStatusLabel.Location = new Point(20, 496);
+        saveStatusLabel.Name = "saveStatusLabel";
+        saveStatusLabel.Size = new Size(560, 18);
+        saveStatusLabel.Text = "Ответы будут дописываться в файл:";
+
+        logPathTextBox.AccessibleName = "Путь к файлу ответов";
+        logPathTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        logPathTextBox.BackColor = SystemColors.Window;
+        logPathTextBox.Location = new Point(20, 520);
+        logPathTextBox.Name = "logPathTextBox";
+        logPathTextBox.ReadOnly = true;
+        logPathTextBox.Size = new Size(560, 23);
+        logPathTextBox.TabIndex = 5;
+
         AcceptButton = sendButton;
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(600, 500);
+        ClientSize = new Size(600, 560);
         Controls.Add(requestLabel);
         Controls.Add(productNameLabel);
         Controls.Add(productNameTextBox);
@@ -129,7 +149,9 @@ partial class Form1
         Controls.Add(sendButton);
         Controls.Add(responseLabel);
         Controls.Add(resultTextBox);
-        MinimumSize = new Size(616, 450);
+        Controls.Add(saveStatusLabel);
+        Controls.Add(logPathTextBox);
+        MinimumSize = new Size(616, 510);
         Name = "Form1";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "Отправка товара — ASP.NET Core";

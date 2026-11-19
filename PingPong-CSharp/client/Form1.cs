@@ -18,6 +18,7 @@ public partial class Form1 : Form
     };
 
     private CancellationTokenSource? activeRequest;
+    private readonly ResponseLog responseLog;
 
     private static readonly HttpClient Http = new(new HttpClientHandler
     {
@@ -28,9 +29,15 @@ public partial class Form1 : Form
         Timeout = TimeSpan.FromSeconds(5)
     };
 
-    public Form1()
+    public Form1() : this(ResponseLog.DefaultPath)
+    {
+    }
+
+    internal Form1(string responseFilePath)
     {
         InitializeComponent();
+        responseLog = new ResponseLog(responseFilePath);
+        logPathTextBox.Text = responseLog.FilePath;
     }
 
     private async void sendButton_Click(object? sender, EventArgs e)
@@ -55,6 +62,7 @@ public partial class Form1 : Form
         if (inputErrors.HasErrors)
         {
             resultTextBox.Text = "Проверьте данные товара. Запрос ещё не отправлен.";
+            saveStatusLabel.Text = "Запрос не отправлен. Новая запись не добавлена.";
             if (inputErrors.GetError(productNameTextBox).Length > 0)
                 productNameTextBox.Focus();
             else if (inputErrors.GetError(priceNumericUpDown).Length > 0)
@@ -77,25 +85,49 @@ public partial class Form1 : Form
         activeRequest = cancellation;
         SetInputsEnabled(false);
         resultTextBox.Text = "Отправка товара…";
+        saveStatusLabel.Text = "Ожидание ответа сервера…";
 
         try
         {
             using HttpResponseMessage response = await Http.PostAsJsonAsync(ProductsUrl, product, cancellation.Token);
             string body = await response.Content.ReadAsStringAsync(cancellation.Token);
+            string responseText = $"HTTP {(int)response.StatusCode} {response.ReasonPhrase}"
+                + Environment.NewLine + Environment.NewLine + FormatJson(body);
+            string? saveError = null;
+
+            try
+            {
+                responseLog.Append(ProductsUrl, responseText);
+            }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.Security.SecurityException)
+            {
+                saveError = error.Message;
+            }
+
             if (IsDisposed || Disposing || cancellation.IsCancellationRequested)
                 return;
 
-            resultTextBox.Text = $"HTTP {(int)response.StatusCode} {response.ReasonPhrase}"
-                + Environment.NewLine + Environment.NewLine + FormatJson(body);
+            resultTextBox.Text = responseText;
+            if (saveError is null)
+                saveStatusLabel.Text = "Ответ дописан в файл:";
+            else
+            {
+                saveStatusLabel.Text = "Ответ получен, но сохранить его в файл не удалось:";
+                resultTextBox.AppendText(Environment.NewLine + Environment.NewLine + "Ошибка записи файла: " + saveError);
+            }
         }
         catch (HttpRequestException)
         {
             if (!IsDisposed && !Disposing)
+            {
                 resultTextBox.Text = "Не удалось связаться с API. Запустите сервер ASP.NET Core на порту 8001.";
+                saveStatusLabel.Text = "HTTP-ответ не получен. Новая запись не добавлена.";
+            }
         }
         catch (OperationCanceledException) when (!cancellation.IsCancellationRequested)
         {
             resultTextBox.Text = "Сервер не ответил за 5 секунд.";
+            saveStatusLabel.Text = "HTTP-ответ не получен. Новая запись не добавлена.";
         }
         catch (OperationCanceledException)
         {
@@ -103,7 +135,10 @@ public partial class Form1 : Form
         catch (Exception error) when (error is InvalidOperationException or ArgumentException)
         {
             if (!IsDisposed && !Disposing)
+            {
                 resultTextBox.Text = "Не удалось прочитать ответ сервера: " + error.Message;
+                saveStatusLabel.Text = "Ответ не прочитан. Новая запись не добавлена.";
+            }
         }
         finally
         {
