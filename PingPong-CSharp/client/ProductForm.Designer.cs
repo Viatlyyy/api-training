@@ -1,6 +1,6 @@
 namespace PingClient;
 
-partial class Form1
+partial class ProductForm
 {
     private Label requestLabel;
     private Label productNameLabel;
@@ -137,7 +137,7 @@ partial class Form1
         Controls.Add(saveStatusLabel);
         Controls.Add(logPathTextBox);
         MinimumSize = new Size(616, 510);
-        Name = "Form1";
+        Name = "ProductForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "Отправка товара — ASP.NET Core";
         ((System.ComponentModel.ISupportInitialize)priceNumericUpDown).EndInit();

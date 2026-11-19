@@ -3,14 +3,14 @@ using System.Net.Http.Json;
 
 namespace PingClient;
 
-public partial class Form1 : Form
+public partial class ProductForm : Form
 {
     private static readonly HttpClient http = new() { Timeout = TimeSpan.FromSeconds(5) };
     private string logPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "ApiTraining", "responses.txt");
 
-    public Form1()
+    public ProductForm()
     {
         InitializeComponent();
         logPathTextBox.Text = logPath;
