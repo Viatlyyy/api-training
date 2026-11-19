@@ -2,7 +2,6 @@ namespace PingClient;
 
 partial class Form1
 {
-    private System.ComponentModel.IContainer components;
     private Label requestLabel;
     private Label productNameLabel;
     private TextBox productNameTextBox;
@@ -13,20 +12,11 @@ partial class Form1
     private Button sendButton;
     private Label responseLabel;
     private TextBox resultTextBox;
-    private ErrorProvider inputErrors;
     private Label saveStatusLabel;
     private TextBox logPathTextBox;
 
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing && components != null)
-            components.Dispose();
-        base.Dispose(disposing);
-    }
-
     private void InitializeComponent()
     {
-        components = new System.ComponentModel.Container();
         requestLabel = new Label();
         productNameLabel = new Label();
         productNameTextBox = new TextBox();
@@ -37,12 +27,10 @@ partial class Form1
         sendButton = new Button();
         responseLabel = new Label();
         resultTextBox = new TextBox();
-        inputErrors = new ErrorProvider(components);
         saveStatusLabel = new Label();
         logPathTextBox = new TextBox();
         ((System.ComponentModel.ISupportInitialize)priceNumericUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)quantityNumericUpDown).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)inputErrors).BeginInit();
         SuspendLayout();
 
         requestLabel.AutoSize = true;
@@ -116,9 +104,6 @@ partial class Form1
         resultTextBox.TabIndex = 4;
         resultTextBox.Text = "Заполните данные и нажмите «Отправить товар».";
 
-        inputErrors.BlinkStyle = ErrorBlinkStyle.NeverBlink;
-        inputErrors.ContainerControl = this;
-
         saveStatusLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         saveStatusLabel.AutoEllipsis = true;
         saveStatusLabel.Location = new Point(20, 496);
@@ -157,7 +142,6 @@ partial class Form1
         Text = "Отправка товара — ASP.NET Core";
         ((System.ComponentModel.ISupportInitialize)priceNumericUpDown).EndInit();
         ((System.ComponentModel.ISupportInitialize)quantityNumericUpDown).EndInit();
-        ((System.ComponentModel.ISupportInitialize)inputErrors).EndInit();
         ResumeLayout(false);
         PerformLayout();
     }
