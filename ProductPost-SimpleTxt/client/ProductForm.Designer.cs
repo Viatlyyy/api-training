@@ -109,9 +109,9 @@ partial class ProductForm
         saveStatusLabel.Location = new Point(20, 496);
         saveStatusLabel.Name = "saveStatusLabel";
         saveStatusLabel.Size = new Size(560, 18);
-        saveStatusLabel.Text = "Ответы будут дописываться в файл:";
+        saveStatusLabel.Text = "Товары будут дописываться в файл:";
 
-        logPathTextBox.AccessibleName = "Путь к файлу ответов";
+        logPathTextBox.AccessibleName = "Путь к файлу товаров";
         logPathTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         logPathTextBox.BackColor = SystemColors.Window;
         logPathTextBox.Location = new Point(20, 520);

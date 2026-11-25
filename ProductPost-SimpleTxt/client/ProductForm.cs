@@ -6,7 +6,7 @@ namespace PingClient;
 public partial class ProductForm : Form
 {
     private static readonly HttpClient http = new() { Timeout = TimeSpan.FromSeconds(5) };
-    private string filePath = @"..\responses.txt";
+    private string filePath = "..\\responses.txt";
 
     public ProductForm()
     {
@@ -35,10 +35,21 @@ public partial class ProductForm : Form
 
             if (!IsDisposed)
                 resultTextBox.Text = answer;
-            File.AppendAllText(filePath, answer + Environment.NewLine + Environment.NewLine);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                if (!IsDisposed)
+                    saveStatusLabel.Text = "Товар не записан: сервер вернул ошибку.";
+                return;
+            }
+
+            string productText = $"Название: {product.name}" + Environment.NewLine
+                + $"Цена: {product.price:F2}" + Environment.NewLine
+                + $"Количество: {product.quantity}" + Environment.NewLine + Environment.NewLine;
+            File.AppendAllText(filePath, productText);
 
             if (!IsDisposed)
-                saveStatusLabel.Text = "Ответ дописан в файл:";
+                saveStatusLabel.Text = "Товар дописан в файл:";
         }
         catch (Exception error)
         {
