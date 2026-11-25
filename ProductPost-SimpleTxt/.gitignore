@@ -1,0 +1,5 @@
+/responses.txt
+**/bin/
+**/obj/
+.vs/
+*.user

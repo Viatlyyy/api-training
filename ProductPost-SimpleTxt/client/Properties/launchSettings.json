@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PingClient": {
+      "commandName": "Project",
+      "workingDirectory": ".."
+    }
+  }
+}
