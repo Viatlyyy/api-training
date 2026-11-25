@@ -6,7 +6,7 @@ namespace PingClient;
 public partial class ProductForm : Form
 {
     private static readonly HttpClient http = new() { Timeout = TimeSpan.FromSeconds(5) };
-    private string logPath = "responses.txt";
+    private string logPath = @"C:\Users\Vitaly\Desktop\pingpong C# simple\responses.txt";
 
     public ProductForm()
     {
