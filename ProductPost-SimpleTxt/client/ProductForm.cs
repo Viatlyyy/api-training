@@ -6,12 +6,12 @@ namespace PingClient;
 public partial class ProductForm : Form
 {
     private static readonly HttpClient http = new() { Timeout = TimeSpan.FromSeconds(5) };
-    private string logPath = @"C:\Users\Vitaly\Desktop\pingpong C# simple\responses.txt";
+    private string filePath = @"..\responses.txt";
 
     public ProductForm()
     {
         InitializeComponent();
-        logPathTextBox.Text = logPath;
+        logPathTextBox.Text = filePath;
     }
 
     private async void sendButton_Click(object? sender, EventArgs e)
@@ -35,7 +35,7 @@ public partial class ProductForm : Form
 
             if (!IsDisposed)
                 resultTextBox.Text = answer;
-            File.AppendAllText(logPath, answer + Environment.NewLine + Environment.NewLine);
+            File.AppendAllText(filePath, answer + Environment.NewLine + Environment.NewLine);
 
             if (!IsDisposed)
                 saveStatusLabel.Text = "Ответ дописан в файл:";
