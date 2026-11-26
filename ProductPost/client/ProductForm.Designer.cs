@@ -13,7 +13,7 @@ partial class ProductForm
     private Label responseLabel;
     private TextBox resultTextBox;
     private Label saveStatusLabel;
-    private TextBox logPathTextBox;
+    private ProgressBar sendProgressBar;
 
     private void InitializeComponent()
     {
@@ -28,7 +28,7 @@ partial class ProductForm
         responseLabel = new Label();
         resultTextBox = new TextBox();
         saveStatusLabel = new Label();
-        logPathTextBox = new TextBox();
+        sendProgressBar = new ProgressBar();
         ((System.ComponentModel.ISupportInitialize)priceNumericUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)quantityNumericUpDown).BeginInit();
         SuspendLayout();
@@ -109,16 +109,17 @@ partial class ProductForm
         saveStatusLabel.Location = new Point(20, 496);
         saveStatusLabel.Name = "saveStatusLabel";
         saveStatusLabel.Size = new Size(560, 18);
-        saveStatusLabel.Text = "Товары будут дописываться в файл:";
+        saveStatusLabel.Text = "Товар сохраняет сервер.";
 
-        logPathTextBox.AccessibleName = "Путь к файлу товаров";
-        logPathTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        logPathTextBox.BackColor = SystemColors.Window;
-        logPathTextBox.Location = new Point(20, 520);
-        logPathTextBox.Name = "logPathTextBox";
-        logPathTextBox.ReadOnly = true;
-        logPathTextBox.Size = new Size(560, 23);
-        logPathTextBox.TabIndex = 5;
+        sendProgressBar.AccessibleName = "Отправка товара";
+        sendProgressBar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        sendProgressBar.Location = new Point(20, 520);
+        sendProgressBar.MarqueeAnimationSpeed = 30;
+        sendProgressBar.Name = "sendProgressBar";
+        sendProgressBar.Size = new Size(560, 23);
+        sendProgressBar.Style = ProgressBarStyle.Marquee;
+        sendProgressBar.TabIndex = 5;
+        sendProgressBar.Visible = false;
 
         AcceptButton = sendButton;
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -135,11 +136,11 @@ partial class ProductForm
         Controls.Add(responseLabel);
         Controls.Add(resultTextBox);
         Controls.Add(saveStatusLabel);
-        Controls.Add(logPathTextBox);
+        Controls.Add(sendProgressBar);
         MinimumSize = new Size(616, 510);
         Name = "ProductForm";
         StartPosition = FormStartPosition.CenterScreen;
-        Text = "Товар — TXT в папке проекта";
+        Text = "Товар — сохранение на сервере";
         ((System.ComponentModel.ISupportInitialize)priceNumericUpDown).EndInit();
         ((System.ComponentModel.ISupportInitialize)quantityNumericUpDown).EndInit();
         ResumeLayout(false);

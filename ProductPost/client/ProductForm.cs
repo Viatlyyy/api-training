@@ -6,19 +6,17 @@ namespace PingClient;
 public partial class ProductForm : Form
 {
     private static readonly HttpClient http = new() { Timeout = TimeSpan.FromSeconds(5) };
-    private string filePath = "..\\responses.txt";
+    private bool isSending;
 
     public ProductForm()
     {
         InitializeComponent();
-        logPathTextBox.Text = filePath;
     }
 
     private async void sendButton_Click(object? sender, EventArgs e)
     {
-        sendButton.Enabled = false;
-        resultTextBox.Text = "Отправка товара…";
-        saveStatusLabel.Text = "Ожидание ответа…";
+        if (isSending)
+            return;
 
         try
         {
@@ -29,40 +27,42 @@ public partial class ProductForm : Form
                 quantity = int.Parse(quantityNumericUpDown.Text, NumberStyles.Number)
             };
 
+            SetSending(true);
+            resultTextBox.Text = "Отправка товара…";
+            saveStatusLabel.Text = "Ожидание ответа сервера…";
+
             using var response = await http.PostAsJsonAsync("http://127.0.0.1:8001/products", product);
-            string answer = $"HTTP {(int)response.StatusCode} {response.ReasonPhrase}"
+            resultTextBox.Text = $"HTTP {(int)response.StatusCode} {response.ReasonPhrase}"
                 + Environment.NewLine + await response.Content.ReadAsStringAsync();
-
-            if (!IsDisposed)
-                resultTextBox.Text = answer;
-
-            if (!response.IsSuccessStatusCode)
-            {
-                if (!IsDisposed)
-                    saveStatusLabel.Text = "Товар не записан: сервер вернул ошибку.";
-                return;
-            }
-
-            string productText = $"Название: {product.name}" + Environment.NewLine
-                + $"Цена: {product.price:F2}" + Environment.NewLine
-                + $"Количество: {product.quantity}" + Environment.NewLine + Environment.NewLine;
-            File.AppendAllText(filePath, productText);
-
-            if (!IsDisposed)
-                saveStatusLabel.Text = "Товар дописан в файл:";
+            saveStatusLabel.Text = response.IsSuccessStatusCode
+                ? "Товар сохранён сервером."
+                : "Товар не сохранён: ошибка сервера.";
         }
         catch (Exception error)
         {
-            if (!IsDisposed)
-            {
-                resultTextBox.AppendText(Environment.NewLine + "Ошибка: " + error.Message);
-                saveStatusLabel.Text = "Новая запись не добавлена.";
-            }
+            resultTextBox.Text = "Ошибка: " + error.Message;
+            saveStatusLabel.Text = "Нет подтверждения о сохранении товара.";
         }
         finally
         {
-            if (!IsDisposed)
-                sendButton.Enabled = true;
+            SetSending(false);
         }
+    }
+
+    private void SetSending(bool sending)
+    {
+        isSending = sending;
+        foreach (Control control in Controls)
+            control.Enabled = !sending;
+        sendProgressBar.Enabled = true;
+        sendProgressBar.Visible = sending;
+        UseWaitCursor = sending;
+    }
+
+    protected override void OnFormClosing(FormClosingEventArgs e)
+    {
+        base.OnFormClosing(e);
+        if (isSending)
+            e.Cancel = true;
     }
 }
